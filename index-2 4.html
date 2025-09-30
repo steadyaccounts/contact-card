@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Slide-In Floating Contact Card</title>
+  <style>
+    :root{
+      --accent:#b71c1c;
+      --bg: #fff;
+      --overlay: rgba(0,0,0,0.45);
+      --card-width: 420px;
+      --radius: 12px;
+      --transition: 300ms cubic-bezier(.2,.9,.3,1);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    body{margin:0;padding:0;font-family:inherit;background:#faf7f5;}
+    button{font-family:inherit;}
+    .btn{background:var(--accent);color:white;padding:12px 20px;border-radius:10px;border:0;font-weight:600;cursor:pointer;}
+    .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:flex-end;background:rgba(0,0,0,0);opacity:0;pointer-events:none;transition:all 0.3s ease;z-index:9999;}
+    .overlay.open{opacity:1;background:rgba(0,0,0,0.45);pointer-events:auto;}
+    .contact-card{width:420px;max-width:100%;height:100%;background:var(--bg);border-radius:12px 0 0 12px;box-shadow:0 6px 24px rgba(0,0,0,0.25);overflow:hidden;transform:translateX(100%);transition:transform 0.3s ease;position:relative;}
+    .contact-card iframe{width:100%;height:100%;border:none;}
+    .close-btn{position:absolute;top:10px;right:10px;background:#fff;border:1px solid #ddd;border-radius:50%;width:32px;height:32px;cursor:pointer;z-index:10;}
+    @media (max-width:600px){
+      .contact-card{width:100%;height:100%;border-radius:0;}
+    }
+  </style>
+</head>
+<body>
+  <div style="padding:40px;text-align:center;">
+    <button class="btn" onclick="document.getElementById('popup').classList.add('open')">Get in Touch</button>
+  </div>
+
+  <div id="popup" class="overlay">
+    <div class="contact-card">
+      <button class="close-btn" onclick="document.getElementById('popup').classList.remove('open')">✕</button>
+      <iframe src="https://your-site-name.netlify.app"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const popup = document.getElementById('popup');
+    popup.addEventListener('click', e=>{
+      if(e.target===popup){
+        popup.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>
