@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Slide-In Floating Contact Card</title>
+  <style>
+    :root{
+      --accent:#b71c1c;
+      --bg: #fff;
+      --overlay: rgba(0,0,0,0.45);
+      --card-width: 420px;
+      --radius: 12px;
+      --transition: 300ms cubic-bezier(.2,.9,.3,1);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+
+    body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#faf7f5;margin:0;padding:40px}
+    .demo-wrap{max-width:980px;width:100%;display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap}
+
+    .btn{background:var(--accent);color:white;padding:12px 18px;border-radius:10px;border:0;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
+
+    .overlay{position:fixed;inset:0;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity var(--transition);display:flex;align-items:center;justify-content:flex-end;z-index:9998;padding:20px}
+    .overlay.open{opacity:1;pointer-events:auto}
+
+    .contact-card{width:var(--card-width);max-width:100%;height:100%;max-height:840px;background:var(--bg);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.18);transform:translateX(20px);opacity:0;transition:transform var(--transition),opacity var(--transition);overflow:auto;display:flex;flex-direction:column}
+    .overlay.open .contact-card{transform:translateX(0);opacity:1}
+
+    .card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 6px 18px;border-bottom:1px solid #f0e9e6}
+    .card-title{font-size:18px;font-weight:700}
+    .card-sub{font-size:13px;color:#666}
+
+    .close-btn{background:transparent;border:0;padding:8px;border-radius:8px;cursor:pointer}
+    .close-btn:focus{outline:2px solid #ffd7d7}
+
+    .card-body{padding:18px;display:flex;flex-direction:column;gap:12px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    label{font-size:13px;color:#333}
+    input[type=text],input[type=email],textarea{padding:10px;border-radius:8px;border:1px solid #e6dcd9;font-size:14px}
+    textarea{min-height:120px;resize:vertical}
+
+    .card-footer{display:flex;gap:10px;padding:16px;border-top:1px solid #f0e9e6;align-items:center;justify-content:flex-end;font-size:12px;color:#999}
+
+    .muted{font-size:13px;color:#777}
+    .submit-btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+
+    .success-message{padding:40px;text-align:center;font-size:16px;color:#333}
+    .success-message h3{margin:0 0 10px 0;color:var(--accent)}
+    .success-message p{margin:6px 0}
+
+    @media (max-width:560px){
+      .overlay{align-items:flex-end;justify-content:center}
+      .contact-card{width:100%;border-radius:16px 16px 0 0;max-height:92vh}
+    }
+
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <div class="demo-wrap">
+    <div>
+      <h2 style="margin:0 0 6px 0">Example page</h2>
+      <p style="margin:0 0 8px 0;color:#555">Click the button to open the slide-in contact card.</p>
+      <button class="btn" id="openContact">Get in Touch</button>
+    </div>
+  </div>
+
+  <!-- Overlay + Right Slide Card -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <aside class="contact-card" role="dialog" aria-modal="true" aria-labelledby="contactTitle" aria-describedby="contactDesc">
+      <header class="card-header">
+        <div>
+          <div id="contactTitle" class="card-title">Get in touch</div>
+          <div id="contactDesc" class="card-sub">We usually reply within 24 hours.</div>
+        </div>
+        <button class="close-btn" id="closeBtn" aria-label="Close contact form">✕</button>
+      </header>
+
+      <div class="card-body">
+        <form id="contactForm" name="contact" method="POST" data-netlify="true">
+          <input type="hidden" name="form-name" value="contact" />
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+
+          <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+            <button class="submit-btn" type="submit">Send message</button>
+            <div class="muted">Or email us at <a href="mailto:rosalinaruiz@steadyaccounts.com">rosalinaruiz@steadyaccounts.com</a></div>
+          </div>
+
+          <div class="sr-only" tabindex="0" id="startTrap">start</div>
+          <div class="sr-only" tabindex="0" id="endTrap">end</div>
+        </form>
+        <div class="success-message" id="successMsg" style="display:none">
+          <h3>Thank you!</h3>
+          <p>Your message has been sent successfully.</p>
+          <p>We’ve also sent a confirmation copy to your email.</p>
+          <p>We’ll get back to you soon.</p>
+        </div>
+      </div>
+
+      <footer class="card-footer">
+        <div>Secure • Confidential</div>
+      </footer>
+    </aside>
+  </div>
+
+  <script>
+    (function(){
+      const overlay = document.getElementById('overlay');
+      const openBtn = document.getElementById('openContact');
+      const closeBtn = document.getElementById('closeBtn');
+
+      const nameInput = document.getElementById('name');
+      const startTrap = document.getElementById('startTrap');
+      const endTrap = document.getElementById('endTrap');
+
+      const form = document.getElementById('contactForm');
+      const successMsg = document.getElementById('successMsg');
+
+      function open(){
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden','false');
+        setTimeout(()=>nameInput.focus(), 150);
+        document.addEventListener('keydown', onKeyDown);
+      }
+
+      function close(){
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden','true');
+        openBtn.focus();
+        document.removeEventListener('keydown', onKeyDown);
+      }
+
+      function onKeyDown(e){
+        if(e.key === 'Escape') close();
+      }
+
+      openBtn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      overlay.addEventListener('click', e=>{if(e.target===overlay) close()});
+
+      startTrap.addEventListener('focus', ()=> endTrap.focus());
+      endTrap.addEventListener('focus', ()=> nameInput.focus());
+
+      form.addEventListener('submit', e=>{
+        e.preventDefault();
+        form.style.display = 'none';
+        successMsg.style.display = 'block';
+      });
+    })();
+  </script>
+</body>
+</html>
